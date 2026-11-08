@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, Image} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert, ActivityIndicator,  KeyboardAvoidingView, Platform, Image} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-
 import { doc, updateDoc } from "firebase/firestore";
-
 import { useAuth } from "../../src/context/AuthContext";
 import { db } from "../../src/firebaseConnection";
 
 export default function Funcionario() {
-  const { user, funcionario, atualizarFuncionario } = useAuth();
+  const { user, funcionario, atualizarFuncionario, logout} = useAuth();
 
   const [nome, setNome] = useState("");
   const [cargo, setCargo] = useState("");
@@ -113,6 +111,35 @@ export default function Funcionario() {
 
   // Mostra a foto selecionada ou a foto já salva
   const imagemPerfil = fotoSelecionada || fotoURL;
+
+  async function confirmarLogout() {
+    Alert.alert(
+      "Sair da conta",
+      "Tem certeza de que deseja sair do aplicativo?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Sair",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await logout();
+            } catch (error) {
+              console.log("Erro ao sair:", error);
+
+              Alert.alert(
+                "Erro",
+                "Não foi possível sair da conta. Tente novamente.",
+              );
+            }
+          },
+        },
+      ],
+    );
+  }
 
   return (
     <KeyboardAvoidingView
@@ -239,6 +266,16 @@ export default function Funcionario() {
                 <Text style={styles.textoBotao}>Salvar alterações</Text>
               </>
             )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.botaoSair}
+            onPress={confirmarLogout}
+            disabled={salvando}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="log-out-outline" size={20} color="#DC2626" />
+
+            <Text style={styles.textoBotaoSair}>Sair da conta</Text>
           </TouchableOpacity>
         </View>
 
@@ -417,5 +454,21 @@ const styles = StyleSheet.create({
     color: "#94A3B8",
     fontSize: 12,
     marginTop: 25,
+  },
+  botaoSair: {
+    height: 54,
+    backgroundColor: "#FEE2E2",
+    borderRadius: 12,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 9,
+    marginTop: 12,
+  },
+
+  textoBotaoSair: {
+    color: "#DC2626",
+    fontSize: 15,
+    fontWeight: "bold",
   },
 });
