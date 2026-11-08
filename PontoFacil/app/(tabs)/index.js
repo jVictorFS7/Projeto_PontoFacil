@@ -3,7 +3,6 @@ import {  View, Text, StyleSheet, Alert, ActivityIndicator, ScrollView} from 're
 import { useAuth } from '../../src/context/AuthContext';
 import { db } from '../../src/firebaseConnection';
 import { addDoc, collection, getDocs, query, where, serverTimestamp} from 'firebase/firestore';
-
 import * as Haptics from 'expo-haptics';
 
 export default function Inicio() {
