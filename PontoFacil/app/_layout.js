@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { Stack, useRouter, useSegments } from "expo-router";
-
 import { AuthProvider, useAuth } from "../src/context/AuthContext";
 
 function Navegacao() {

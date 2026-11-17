@@ -1,21 +1,8 @@
-
-import React, { useCallback, useEffect, useState } from 'react';
-
-import {
-  View,
-  Text,
-  FlatList,
-  ActivityIndicator,
-  TouchableOpacity,
-  RefreshControl,
-  StyleSheet,
-} from 'react-native';
-
+import { useCallback, useEffect, useState } from 'react';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, RefreshControl, StyleSheet} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-
 import { collection, getDocs, query, where } from 'firebase/firestore';
-
 import { useAuth } from '../../src/context/AuthContext';
 import { db } from '../../src/firebaseConnection';
 

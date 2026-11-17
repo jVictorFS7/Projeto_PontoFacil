@@ -1,8 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged,updateProfile} from "firebase/auth";
-
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
-
+import {  createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile} from "firebase/auth";
+import { doc, getDoc, setDoc, serverTimestamp, updateDoc} from "firebase/firestore";
 import { auth, db } from "../firebaseConnection";
 
 const AuthContext = createContext(null);
@@ -78,6 +76,40 @@ export function AuthProvider({ children }) {
     }
   }
 
+  // Atualiza os dados do funcionário
+  async function atualizarFuncionario(dados) {
+    if (!user?.uid) {
+      throw new Error("Usuário não autenticado.");
+    }
+
+    const dadosAtualizados = {
+      nome: dados.nome.trim(),
+      cargo: dados.cargo.trim(),
+    };
+
+    // Atualiza os dados no Firestore
+    await updateDoc(doc(db, "funcionarios", user.uid), dadosAtualizados);
+
+    // Atualiza o nome no Firebase Authentication
+    if (auth.currentUser) {
+      try {
+        await updateProfile(auth.currentUser, {
+          displayName: dadosAtualizados.nome,
+        });
+      } catch (error) {
+        console.log("Erro ao atualizar nome de exibição:", error);
+      }
+    }
+
+    // Atualiza os dados no estado global
+    setFuncionario((atual) => ({
+      ...atual,
+      ...dadosAtualizados,
+    }));
+
+    return dadosAtualizados;
+  }
+
   // Login
   async function login(email, senha) {
     setCarregando(true);
@@ -107,6 +139,7 @@ export function AuthProvider({ children }) {
         funcionario,
         carregando,
         cadastrarFuncionario,
+        atualizarFuncionario,
         login,
         logout,
       }}
