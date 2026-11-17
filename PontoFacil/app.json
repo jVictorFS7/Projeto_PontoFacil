@@ -3,6 +3,7 @@
     "name": "PontoFacil",
     "slug": "PontoFacil",
     "version": "1.0.0",
+    "scheme": "pontofacil",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
